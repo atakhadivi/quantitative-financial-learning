@@ -26,33 +26,34 @@ Clean data:
 
 - [x] Handle missing values (forward-fill or drop).
 
-Calculate daily returns and log returns.
+- [x] Calculate daily returns and log returns.
 
-Save cleaned data to data/processed/.
+- [x] Save cleaned data to data/processed/.
 
 3. Calculate Metrics and Risk Analysis
 Compute technical indicators:
 
-20-day, 50-day, and 200-day moving averages.
+- [x] 20-day, 50-day, and 200-day moving averages.
 
-Rolling volatility (standard deviation).
+- [x] Rolling volatility (standard deviation).
 
 Calculate risk metrics:
 
-Annualized Sharpe ratio.
+- [x] Annualized Sharpe ratio.
 
-Maximum drawdown.
+- [x] Maximum drawdown.
 
-Compare portfolio performance against S&P 500:
+- [x] Compare portfolio performance against S&P 500:
 
-Cumulative returns over time.
+- [x] Cumulative returns over time.
 
-Relative performance visualization.
+- [x] Relative performance visualization.
 
 4. Data Visualization
 Create Matplotlib plots:
 
-Price trends with moving averages.
+
+- [x] Price trends with moving averages.
 
 Volatility and drawdown charts.
 
