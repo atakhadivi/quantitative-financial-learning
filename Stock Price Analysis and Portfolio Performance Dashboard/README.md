@@ -55,15 +55,14 @@ Create Matplotlib plots:
 
 - [x] Price trends with moving averages.
 
-Volatility and drawdown charts.
+- [x] Volatility and drawdown charts.
 
 Build interactive Plotly visualizations:
 
-Candlestick charts.
+- [x] Candlestick charts.
 
-Portfolio vs. benchmark comparison subplots.
+- [x] Portfolio vs. benchmark comparison subplots.
 
-Save plots to results/figures/.
 
 5. Build Interactive Dashboard
 Create Streamlit/Dash app (app.py):
