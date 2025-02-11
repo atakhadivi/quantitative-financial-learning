@@ -10,7 +10,16 @@ def plot_price_with_moving_averages(ticker: str):
     """Plot stock price with pre-calculated moving averages (with ticker prefixes)."""
     # Load data with moving averages
     file_path = DATA_PROCESSED_DIR / f"{ticker}_with_moving_averages.csv"
+
+    # چک کردن اینکه فایل وجود دارد یا نه
+    if not file_path.exists():
+        print(f"Error: Data file not found for {ticker}: {file_path}")
+        return
+
     df = pd.read_csv(file_path, parse_dates=['Date'], index_col='Date')
+
+    # نمایش نام ستون‌ها برای دیباگ
+    print(f"Columns in {ticker} dataset:", df.columns.tolist())
 
     # Dynamic column names based on the ticker
     close_col = 'Close'
@@ -39,6 +48,7 @@ def plot_price_with_moving_averages(ticker: str):
     plt.tight_layout()
 
     plt.show()
+
 
 if __name__ == "__main__":
     for ticker in TICKERS:
