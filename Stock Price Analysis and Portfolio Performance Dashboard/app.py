@@ -14,15 +14,16 @@ from scripts.volatility_and_drawdown_charts import plot_volatility, plot_drawdow
 
 @st.cache_data
 def load_data(stock):
-    file_path = f"data/processed/{stock}_cleaned.csv"
+    file_path = f"data/processed/{stock}_cleaned.csv"  # ✅ Correct
     return pd.read_csv(file_path, parse_dates=['Date'])
 
 stocks = ["AAPL", "SPY"]  # Add more stocks if needed
 
 st.sidebar.title("Stock Dashboard")
 selected_stock = st.sidebar.selectbox("Select Stock", stocks)
-start_date = pd.to_datetime(st.sidebar.date_input("Start Date", pd.to_datetime("2020-01-01")))
-end_date = pd.to_datetime(st.sidebar.date_input("End Date", pd.to_datetime("2023-01-01")))
+start_date = st.sidebar.date_input("Start Date", value="2020-01-01")
+end_date = st.sidebar.date_input("End Date", value="2023-01-01")
+
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Price Trends", "Candlestick Chart", "Risk Metrics", 
@@ -51,10 +52,11 @@ with tab3:
 
 with tab4:
     st.subheader("Portfolio Performance")
-    weights = {selected_stock: 1.0}  # Assuming a single stock with full allocation
-    portfolio_returns = calculate_portfolio_returns(selected_stock, weights)    
-    cumulative_returns = calculate_cumulative_returns(portfolio_returns)
+    weights = [1.0]  # ✅ List format
+    portfolio_returns = calculate_portfolio_returns([selected_stock], weights)
+    cumulative_returns = (1 + portfolio_returns).cumprod()  # ✅ Correct cumulative return calculation
     st.line_chart(cumulative_returns)
+
 
 with tab5:
     st.subheader("Benchmark Comparison")

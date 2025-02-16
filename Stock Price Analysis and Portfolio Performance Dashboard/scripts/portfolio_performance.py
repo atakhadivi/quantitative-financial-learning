@@ -12,6 +12,8 @@ def calculate_cumulative_returns(ticker: str) -> pd.Series:
     """Calculate cumulative returns for a given ticker."""
     # Load cleaned data
     processed_path = DATA_PROCESSED_DIR / f"{ticker}_cleaned.csv"
+    print(f"Looking for file: {processed_path}")  # Debugging output
+
     df = pd.read_csv(processed_path, parse_dates=['Date'], index_col='Date')
     
     # Calculate daily returns if not already present
@@ -55,5 +57,6 @@ if __name__ == "__main__":
     plt.show()
 
     # Print final cumulative returns for comparison
-    print(f"Final Portfolio Cumulative Return: {portfolio_cumulative_returns[-1]:.4f}")
-    print(f"Final S&P 500 Cumulative Return: {spy_cumulative_returns[-1]:.4f}")
+    print(f"Final Portfolio Cumulative Return: {portfolio_cumulative_returns.iloc[-1]:.4f}")
+    print(f"Final S&P 500 Cumulative Return: {spy_cumulative_returns.iloc[-1]:.4f}")
+
