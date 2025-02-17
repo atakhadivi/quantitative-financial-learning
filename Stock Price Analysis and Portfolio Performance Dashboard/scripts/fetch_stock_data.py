@@ -1,41 +1,60 @@
-# fetch_stock_data.py
 import yfinance as yf
 import pandas as pd
-from datetime import datetime
+import sys
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
 
 # Configuration
-TICKERS = ['AAPL', 'SPY']
-START_DATE = datetime(2019, 1, 1)
-END_DATE = datetime(2024, 12, 31)
+DEFAULT_TICKERS = ['AAPL', 'SPY']
+START_DATE = "2019-01-01"
+END_DATE = "2024-12-31"
 DATA_DIR = Path("data/raw")
 
-def fetch_data(tickers, start_date, end_date):
-    """Fetch historical stock data from Yahoo Finance"""
-    print(f"Fetching data for {tickers} from {start_date} to {end_date}")
+def fetch_data(tickers: list, start_date: str, end_date: str) -> dict:
+    """Fetch historical prices for multiple stocks concurrently"""
+    results = {}
     
-    # Download data with 1-day interval
-    data = yf.download(
-        tickers=tickers,
-        start=start_date,
-        end=end_date,
-        interval="1d",
-        group_by='ticker',
-        auto_adjust=True  # Use adjusted closing prices
-    )
+    def fetch_single(ticker):
+        try:
+            data = yf.download(
+                tickers=ticker,
+                start=start_date,
+                end=end_date,
+                interval="1d",
+                auto_adjust=True,
+                progress=False
+            )
+            if data.empty:
+                print(f"Warning: No data found for {ticker}")
+            return {ticker: data}
+        except Exception as e:
+            print(f"Failed to fetch {ticker}: {str(e)}")
+            return {}
     
-    return data
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(fetch_single, t) for t in tickers]
+        for future in futures:
+            results.update(future.result())
+    
+    return results
 
-def save_data(data, data_dir):
-    """Save data to CSV files"""
-    for ticker in TICKERS:
-        df = data[ticker]
-        filename = data_dir / f"{ticker}_historical.csv"
-        df.to_csv(filename)
-        print(f"Saved {filename}")
+def save_data(stock_data: dict, save_dir: Path):
+    """Save fetched data to CSV files"""
+    save_dir.mkdir(parents=True, exist_ok=True)
+    for ticker, df in stock_data.items():
+        if not df.empty:
+            df.to_csv(save_dir / f"{ticker}_historical.csv")
+            print(f"Saved {ticker}_historical.csv to {save_dir}")
+
+def main(tickers=None):
+    tickers = tickers if tickers else DEFAULT_TICKERS
+    print(f"Fetching data for {tickers}...")
+    data = fetch_data(tickers, START_DATE, END_DATE)
+    save_data(data, DATA_DIR)
+    print("Data download complete!")
 
 if __name__ == "__main__":
-    # Fetch and save data
-    stock_data = fetch_data(TICKERS, START_DATE, END_DATE)
-    save_data(stock_data, DATA_DIR)
-    print("Data download complete!")
+    if len(sys.argv) > 1:
+        main(sys.argv[1:])
+    else:
+        main()
